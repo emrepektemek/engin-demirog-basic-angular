@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Product } from '../../models/product';
-import { ProductResponseModel } from './../../models/productResponseModel';
 import { ProductService } from './../../services/product.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-product',
@@ -14,10 +14,19 @@ export class ProductComponent implements OnInit {
   products: Product[] = [];
   dataLoaded: boolean = false;
 
-  constructor(private productService: ProductService) {}
+  constructor(
+    private productService: ProductService,
+    private activedRoute: ActivatedRoute
+  ) {}
 
   ngOnInit(): void {
-    this.getProducts();
+    this.activedRoute.params.subscribe((params) => {
+      if (params['categoryId']) {
+        this.getProductsByCategory(params['categoryId']);
+      } else {
+        this.getProducts();
+      }
+    });
   }
 
   getProducts() {
@@ -25,5 +34,14 @@ export class ProductComponent implements OnInit {
       this.products = response.data;
       this.dataLoaded = true;
     });
+  }
+
+  getProductsByCategory(cateogryId: number) {
+    this.productService
+      .getProductsByCategory(cateogryId)
+      .subscribe((response) => {
+        this.products = response.data;
+        this.dataLoaded = true;
+      });
   }
 }
