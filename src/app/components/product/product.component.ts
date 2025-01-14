@@ -7,10 +7,12 @@ import { VatAddedPipe } from '../../pipes/vat-added.pipe';
 import { FormsModule } from '@angular/forms';
 import { FilterPipePipe } from '../../pipes/filter-pipe.pipe';
 import { ToastrService } from 'ngx-toastr';
+import { CartService } from './../../services/cart.service';
 
 @Component({
   selector: 'app-product',
   imports: [CommonModule, VatAddedPipe, FormsModule, FilterPipePipe],
+
   templateUrl: './product.component.html',
   styleUrl: './product.component.css',
 })
@@ -22,7 +24,8 @@ export class ProductComponent implements OnInit {
   constructor(
     private productService: ProductService,
     private activedRoute: ActivatedRoute,
-    private toastrService: ToastrService
+    private toastrService: ToastrService,
+    private cartService: CartService
   ) {}
 
   ngOnInit(): void {
@@ -53,5 +56,6 @@ export class ProductComponent implements OnInit {
 
   addToCart(product: Product) {
     this.toastrService.success('Sepete eklendi', product.productName);
+    this.cartService.addToCart(product);
   }
 }
